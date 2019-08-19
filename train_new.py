@@ -67,7 +67,7 @@ class GPT2Trainer:
         keywords = list(map(lambda x: x[0], sorted_keywords))
         keyword_ids_list = []
         passage_ids_list = []
-        if len(content) > self.min_length and len(keywords) > 1:
+        if len(content) > self.min_length and len(keywords) > 0:
             # 处理关键词
             keyword_ids = []
             for keyword in keywords:
