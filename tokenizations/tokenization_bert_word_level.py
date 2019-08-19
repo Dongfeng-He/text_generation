@@ -295,7 +295,7 @@ class BasicTokenizer(object):
     #     output = []
     #     for char in text:
     #         cp = ord(char)
-    #         if self._is_chinese_char(cp) or char.isdigit():
+    #         if self.is_chinese_char(cp) or char.isdigit():
     #             output.append(" ")
     #             output.append(char)
     #             output.append(" ")

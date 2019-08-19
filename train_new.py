@@ -102,7 +102,7 @@ class GPT2Trainer:
             for i, line in enumerate(f):
                 if self.debug_mode and i == 10: break
                 data_dict = json.loads(line)
-                if (i + 1) % 1000 == 0: print("已加载训练样本 %d" % (i + 1))
+                if (i + 1) % 10000 == 0: print("已加载训练样本 %d" % (i + 1))
                 keyword_ids_list, passage_ids_list = self.process_data_dict(data_dict)
                 if len(keyword_ids_list) != 0 and len(passage_ids_list) != 0:
                     total_keyword_ids_list.extend(keyword_ids_list)
@@ -125,10 +125,22 @@ class GPT2Trainer:
             model = GPT2KWModel.from_pretrained(self.pretrained_model)
         model.train()
         model.to(self.device)
+        # 计算模型参数量
+        num_parameters = 0
+        parameters = model.parameters()
+        for parameter in parameters:
+            num_parameters += parameter.numel()
+        print('模型参数量: {}'.format(num_parameters))
+
         print("开始加载训练集")
         train_loader = self.create_dataloader()
         print("训练集加载完毕")
-        total_steps = int(train_loader.sampler.num_samples * self.epochs / self.batch_size / self.accumulation_steps)
+
+        epoch_steps = int(train_loader.sampler.num_samples / self.batch_size / self.accumulation_steps)
+        total_steps = epoch_steps * self.epochs
+        print('epoch 步数 = {}'.format(epoch_steps))
+        print('总步数 = {}'.format(total_steps))
+
         optimizer = pytorch_transformers.AdamW(model.parameters(), lr=self.lr, correct_bias=True)
         scheduler = pytorch_transformers.WarmupLinearSchedule(optimizer, warmup_steps=self.warmup_steps, t_total=total_steps)
 
@@ -189,17 +201,17 @@ class GPT2Trainer:
                     #if (overall_step + 1) % self.log_step == 0:
                     #    self.tb_writer.add_scalar('loss', loss.item(), overall_step)
 
-                if (overall_step + 1) % self.log_step == 0:
+                if (overall_step + 1) % self.log_step == 0 and running_loss != 0:
                     print('now time: {}:{}. Step {} of epoch {}, loss {}'.format(
                         datetime.now().hour,
                         datetime.now().minute,
-                        (i + 1) // self.gradient_accumulation,
+                        overall_step + 1,
                         epoch + 1,
                         running_loss * self.gradient_accumulation / self.log_step))
                     f_log.write('now time: {}:{}. Step {} of epoch {}, loss {}\n'.format(
                         datetime.now().hour,
                         datetime.now().minute,
-                        (i + 1) // self.gradient_accumulation,
+                        overall_step + 1,
                         epoch + 1,
                         running_loss * self.gradient_accumulation / self.log_step))
                     running_loss = 0
@@ -235,13 +247,13 @@ if __name__ == '__main__':
                         help='tokenized语料存放位置')
     parser.add_argument('--raw', action='store_true', help='是否先做tokenize')
     parser.add_argument('--epochs', default=5, type=int, required=False, help='训练循环')
-    parser.add_argument('--batch_size', default=6, type=int, required=False, help='训练batch size')
-    parser.add_argument('--accumulation_steps', default=2, type=int, required=False, help='梯度累加')
+    parser.add_argument('--batch_size', default=12, type=int, required=False, help='训练batch size')
+    parser.add_argument('--accumulation_steps', default=1, type=int, required=False, help='梯度累加')
     parser.add_argument('--lr', default=1.5e-4, type=float, required=False, help='学习率')
     parser.add_argument('--warmup_steps', default=2000, type=int, required=False, help='warm up步数')
     parser.add_argument('--log_step', default=1000, type=int, required=False, help='多少步汇报一次loss')
     parser.add_argument('--stride', default=768, type=int, required=False, help='训练时取训练数据的窗口步长')
-    parser.add_argument('--gradient_accumulation', default=2, type=str, required=False, help='梯度积累')
+    parser.add_argument('--gradient_accumulation', default=1, type=str, required=False, help='梯度积累')
     parser.add_argument('--fp16', action='store_true', help='混合精度')
     parser.add_argument('--fp16_opt_level', default='O1', type=str, required=False)
     parser.add_argument('--max_grad_norm', default=1.0, type=float, required=False)
