@@ -8,7 +8,7 @@ import re
 import random
 import numpy as np
 import argparse
-from torch.utils.tensorboard import SummaryWriter
+# from torch.utils.tensorboard import SummaryWriter
 from datetime import datetime
 from torch.nn import DataParallel
 
@@ -45,7 +45,7 @@ class GPT2Trainer:
         self.output_dir = args.output_dir
         self.pretrained_model = args.pretrained_model
         self.accumulation_steps = args.accumulation_steps
-        self.tb_writer = SummaryWriter(log_dir=args.writer_dir)
+        # self.tb_writer = SummaryWriter(log_dir=args.writer_dir)
         self.debug_mode = debug_mode
         self.keywords_max_length = 64
         self.passage_max_length = 512
@@ -183,8 +183,8 @@ class GPT2Trainer:
                     optimizer.step()
                     optimizer.zero_grad()
                     overall_step += 1
-                    if (overall_step + 1) % self.log_step == 0:
-                        self.tb_writer.add_scalar('loss', loss.item(), overall_step)
+                    #if (overall_step + 1) % self.log_step == 0:
+                    #    self.tb_writer.add_scalar('loss', loss.item(), overall_step)
 
                 if (overall_step + 1) % self.log_step == 0:
                     print('now time: {}:{}. Step {} of epoch {}, loss {}'.format(
