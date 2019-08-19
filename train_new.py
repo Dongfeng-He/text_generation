@@ -202,7 +202,7 @@ class GPT2Trainer:
                     running_loss = 0
 
             if not os.path.exists(self.output_dir + 'model_epoch{}'.format(epoch + 1)):
-                os.mkdir(self.output_dir + 'model_epoch{}'.format(epoch + 1))
+                os.makedirs(self.output_dir + 'model_epoch{}'.format(epoch + 1))
             model_to_save = model.module if hasattr(model, 'module') else model
             model_to_save.save_pretrained(self.output_dir + 'model_epoch{}'.format(epoch + 1))
             # torch.save(scheduler.state_dict(), output_dir + 'model_epoch{}/scheduler.pt'.format(epoch + 1))
@@ -214,7 +214,7 @@ class GPT2Trainer:
 
         print('training finished')
         if not os.path.exists(self.output_dir + 'final_model'):
-            os.mkdir(self.output_dir + 'final_model')
+            os.makedirs(self.output_dir + 'final_model')
         model_to_save = model.module if hasattr(model, 'module') else model
         model_to_save.save_pretrained(self.output_dir + 'final_model')
         # torch.save(scheduler.state_dict(), output_dir + 'final_model/scheduler.pt')
@@ -250,5 +250,5 @@ if __name__ == '__main__':
     parser.add_argument('--no_wordpiece', action='store_true', help='不做word piece切词')
     parser.add_argument('--segment', action='store_true', help='中文以词为单位')
     args = parser.parse_args()
-    trainer = GPT2Trainer(args, debug_mode=True)
+    trainer = GPT2Trainer(args, debug_mode=False)
     trainer.train()
