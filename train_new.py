@@ -101,7 +101,6 @@ class GPT2Trainer:
         with open(self.raw_data_path, "r") as f:
             for i, line in enumerate(f):
                 if self.debug_mode and i == 10: break
-                if i == 1000: break
                 data_dict = json.loads(line)
                 if (i + 1) % 10000 == 0: print("已加载训练样本 %d" % (i + 1))
                 keyword_ids_list, passage_ids_list = self.process_data_dict(data_dict)
@@ -267,7 +266,7 @@ if __name__ == '__main__':
     parser.add_argument('--segment', action='store_true', help='中文以词为单位')
     args = parser.parse_args()
     trainer = GPT2Trainer(args, debug_mode=False)
-    auto_shutdown = False
+    auto_shutdown = True
     if auto_shutdown:
         try:
             trainer.train()
