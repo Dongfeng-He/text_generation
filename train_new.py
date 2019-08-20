@@ -268,7 +268,6 @@ if __name__ == '__main__':
     args = parser.parse_args()
     trainer = GPT2Trainer(args, debug_mode=False)
     auto_shutdown = False
-
     if auto_shutdown:
         try:
             trainer.train()
