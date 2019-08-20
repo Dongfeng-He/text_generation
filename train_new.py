@@ -266,9 +266,13 @@ if __name__ == '__main__':
     parser.add_argument('--segment', action='store_true', help='中文以词为单位')
     args = parser.parse_args()
     trainer = GPT2Trainer(args, debug_mode=False)
-    try:
+    auto_shutdown = False
+    if auto_shutdown:
+        try:
+            trainer.train()
+        except:
+            pass
+        os.system("sudo init 0")
+    else:
         trainer.train()
-    except:
-        pass
-    os.system("sudo init 0")
 
