@@ -103,7 +103,7 @@ class GPT2Trainer:
             for i, line in enumerate(f):
                 if self.debug_mode and i == 10: break
                 data_dict = json.loads(line)
-                if (i + 1) % 10000 == 0: print("已加载训练样本 %d" % (i + 1))
+                if (i + 1) % 10000 == 0: self.print_and_log("已加载训练样本 %d" % (i + 1))
                 keyword_ids_list, passage_ids_list = self.process_data_dict(data_dict)
                 if len(keyword_ids_list) != 0 and len(passage_ids_list) != 0:
                     total_keyword_ids_list.extend(keyword_ids_list)
@@ -138,9 +138,9 @@ class GPT2Trainer:
             num_parameters += parameter.numel()
         self.print_and_log('模型参数量: {}'.format(num_parameters))
 
-        print("开始加载训练集")
+        self.print_and_log("开始加载训练集")
         train_loader = self.create_dataloader()
-        print("训练集加载完毕")
+        self.print_and_log("训练集加载完毕")
 
         epoch_steps = int(train_loader.sampler.num_samples / self.batch_size / self.accumulation_steps)
         total_steps = epoch_steps * self.epochs
@@ -166,9 +166,9 @@ class GPT2Trainer:
         overall_step = 0
 
         for epoch in range(self.epochs):
-            print('epoch {}'.format(epoch + 1))
+            self.print_and_log('epoch {}'.format(epoch + 1))
             now = datetime.now()
-            print('time: {}'.format(now))
+            self.print_and_log('time: {}'.format(now))
             optimizer.zero_grad()
             running_loss = 0
             for i, batch_data in enumerate(train_loader):
