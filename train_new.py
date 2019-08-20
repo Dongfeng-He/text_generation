@@ -50,6 +50,7 @@ class GPT2Trainer:
         self.keywords_max_length = 64
         self.passage_max_length = 512
         self.passage_min_length = 128
+        self.f_log = open("train_log.txt", "w")
 
     def clean_content(self, content):
         bracket1 = list(map(lambda x: x.regs[0][0], list(re.finditer("\n\(", content))))
@@ -118,6 +119,11 @@ class GPT2Trainer:
         train_loader = torch.utils.data.DataLoader(train_dataset, batch_size=self.batch_size, shuffle=True, pin_memory=pin_memory, num_workers=num_workers)
         return train_loader
 
+    def print_and_log(self, text):
+        print(text)
+        self.f_log.write(text + "\n")
+        self.f_log.flush()
+
     def train(self):
         if not self.pretrained_model:
             model = GPT2KWModel(config=self.model_config)
@@ -130,7 +136,7 @@ class GPT2Trainer:
         parameters = model.parameters()
         for parameter in parameters:
             num_parameters += parameter.numel()
-        print('模型参数量: {}'.format(num_parameters))
+        self.print_and_log('模型参数量: {}'.format(num_parameters))
 
         print("开始加载训练集")
         train_loader = self.create_dataloader()
@@ -138,8 +144,8 @@ class GPT2Trainer:
 
         epoch_steps = int(train_loader.sampler.num_samples / self.batch_size / self.accumulation_steps)
         total_steps = epoch_steps * self.epochs
-        print('epoch 步数 = {}'.format(epoch_steps))
-        print('总步数 = {}'.format(total_steps))
+        self.print_and_log('epoch 步数 = {}'.format(epoch_steps))
+        self.print_and_log('总步数 = {}'.format(total_steps))
 
         optimizer = pytorch_transformers.AdamW(model.parameters(), lr=self.lr, correct_bias=True)
         scheduler = pytorch_transformers.WarmupLinearSchedule(optimizer, warmup_steps=self.warmup_steps, t_total=total_steps)
@@ -158,7 +164,7 @@ class GPT2Trainer:
             multi_gpu = False
 
         overall_step = 0
-        f_log = open("train_log.txt", "w")
+
         for epoch in range(self.epochs):
             print('epoch {}'.format(epoch + 1))
             now = datetime.now()
@@ -202,13 +208,7 @@ class GPT2Trainer:
                     #    self.tb_writer.add_scalar('loss', loss.item(), overall_step)
 
                 if (overall_step + 1) % self.log_step == 0 and running_loss != 0:
-                    print('now time: {}:{}. Step {} of epoch {}, loss {}'.format(
-                        datetime.now().hour,
-                        datetime.now().minute,
-                        overall_step + 1,
-                        epoch + 1,
-                        running_loss * self.gradient_accumulation / self.log_step))
-                    f_log.write('now time: {}:{}. Step {} of epoch {}, loss {}\n'.format(
+                    self.print_and_log('now time: {}:{}. Step {} of epoch {}, loss {}'.format(
                         datetime.now().hour,
                         datetime.now().minute,
                         overall_step + 1,
@@ -224,10 +224,11 @@ class GPT2Trainer:
             # torch.save(optimizer.state_dict(), output_dir + 'model_epoch{}/optimizer.pt'.format(epoch + 1))
 
             then = datetime.now()
-            print('time: {}'.format(then))
-            print('time for one epoch: {}'.format(then - now))
+            self.print_and_log('time: {}'.format(then))
+            self.print_and_log('time for one epoch: {}'.format(then - now))
 
-        print('training finished')
+        self.print_and_log('training finished')
+        self.f_log.close()
         if not os.path.exists(self.output_dir + 'final_model'):
             os.makedirs(self.output_dir + 'final_model')
         model_to_save = model.module if hasattr(model, 'module') else model
