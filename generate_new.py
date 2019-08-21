@@ -126,7 +126,7 @@ if __name__ == '__main__':
     parser.add_argument('--model_config', default='config/model_config_small.json', type=str, required=False,
                         help='模型参数')
     parser.add_argument('--tokenizer_path', default='cache/vocab_small.txt', type=str, required=False, help='词表路径')
-    parser.add_argument('--model_path', default='model/model_epoch1', type=str, required=False, help='模型路径')
+    parser.add_argument('--model_path', default='trained_model/final_model', type=str, required=False, help='模型路径')
     parser.add_argument('--raw_text', default='', type=str, required=False, help='生成文章的开头')
     parser.add_argument('--keywords', default='中国男篮，王治郅，姚明', type=str, required=False, help='关键词，以中文逗号隔开')
 
