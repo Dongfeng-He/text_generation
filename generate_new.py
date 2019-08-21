@@ -134,8 +134,12 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     generator = GPT2Generator(args)
-    generator.generate(raw_text="姚明在对阵美国对中爆砍50分10板大号两双",
-                       keywords="男篮世界杯，王治郅，易建联",
+    raw_text = "姚明在对阵美国对中爆砍50分10板大号两双"
+    keywords = "男篮世界杯，美国队，王治郅，易建联"
+    print("开头：", raw_text)
+    print("关键词：", keywords)
+    generator.generate(raw_text=raw_text,
+                       keywords=keywords,
                        length=512,
                        temperature=1,
                        top_k=8,
