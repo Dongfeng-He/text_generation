@@ -4,6 +4,7 @@ from model import GPT2KWModel
 import os
 from tokenizations import tokenization_bert
 import argparse
+import json
 from tqdm import trange
 
 
@@ -13,6 +14,8 @@ class GPT2Generator:
         self.batch_size = args.batch_size
         self.tokenizer = tokenization_bert.BertTokenizer(vocab_file=args.tokenizer_path)
         self.model = GPT2KWModel.from_pretrained(args.model_path)
+        self.model.to(self.device)
+        self.model.eval()
         self.keywords_max_length = 64
 
     def is_word(self, word):
@@ -85,8 +88,8 @@ class GPT2Generator:
         return passage_ids, keyword_ids
 
     def generate(self, raw_text, keywords, length, temperature, top_k, top_p, num_samples):
-        self.model.to(self.device)
-        self.model.eval()
+        print("开头: %s" % raw_text)
+        print("关键词: %s" % keywords)
         context_ids, keyword_ids = self.tokenization(raw_text, keywords)
         generated = 0
         for _ in range(num_samples // self.batch_size):
@@ -132,19 +135,25 @@ if __name__ == '__main__':
     parser.add_argument('--keywords', default='中国男篮，王治郅，姚明', type=str, required=False, help='关键词，以中文逗号隔开')
 
     args = parser.parse_args()
-
     generator = GPT2Generator(args)
-    raw_text = "姚明在对阵美国队中爆砍50分10板大号两双"
-    keywords = "男篮世界杯，王治郅，易建联"
-    print("开头: %s" % raw_text)
-    print("关键词: %s" % keywords)
-    generator.generate(raw_text=raw_text,
-                       keywords=keywords,
-                       length=512,
-                       temperature=1,
-                       top_k=8,
-                       top_p=0,
-                       num_samples=4)
+
+    raw_text_list = []
+    keywords_list = []
+    with open("test.txt", "r") as f:
+        for line in f:
+            line = line.strip()
+            line = json.loads(line)
+            raw_text_list.append(line[0])
+            keywords_list.append(line[1])
+
+    for raw_text, keywords in zip(raw_text_list, keywords_list):
+        generator.generate(raw_text=raw_text,
+                           keywords=keywords,
+                           length=512,
+                           temperature=1,
+                           top_k=8,
+                           top_p=0,
+                           num_samples=4)
 
 
 
