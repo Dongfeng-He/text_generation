@@ -87,33 +87,32 @@ class GPT2Generator:
     def generate(self, raw_text, keywords, length, temperature, top_k, top_p, num_samples):
         self.model.to(self.device)
         self.model.eval()
-        while True:
-            context_ids, keyword_ids = self.tokenization(raw_text, keywords)
-            generated = 0
-            for _ in range(num_samples // self.batch_size):
-                out = self.generate_sequence(
-                    context_ids=context_ids, keyword_ids=keyword_ids, length=length, num_samples=num_samples,
-                    temperature=temperature, top_k=top_k, top_p=top_p
-                )
-                out = out.tolist()
-                for i in range(self.batch_size):
-                    generated += 1
-                    text = self.tokenizer.convert_ids_to_tokens(out[0])
-                    for i, item in enumerate(text[:-1]):  # 确保英文前后有空格
-                        if self.is_word(item) and self.is_word(text[i + 1]):
-                            text[i] = item + ' '
+        context_ids, keyword_ids = self.tokenization(raw_text, keywords)
+        generated = 0
+        for _ in range(num_samples // self.batch_size):
+            out = self.generate_sequence(
+                context_ids=context_ids, keyword_ids=keyword_ids, length=length, num_samples=num_samples,
+                temperature=temperature, top_k=top_k, top_p=top_p
+            )
+            out = out.tolist()
+            for i in range(self.batch_size):
+                generated += 1
+                text = self.tokenizer.convert_ids_to_tokens(out[0])
+                for i, item in enumerate(text[:-1]):  # 确保英文前后有空格
+                    if self.is_word(item) and self.is_word(text[i + 1]):
+                        text[i] = item + ' '
 
-                    for i, item in enumerate(text):
-                        if item == '[MASK]':
-                            text[i] = ''
-                        if item == '[CLS]' or item == '[SEP]':
-                            text[i] = '\n'
-                        if item == '[PAD]':
-                            text[i] = ''
-                    print("=" * 40 + " SAMPLE " + str(generated) + " " + "=" * 40)
-                    text = ''.join(text).replace('##', '').strip()
-                    print(text)
-            print("=" * 80)
+                for i, item in enumerate(text):
+                    if item == '[MASK]':
+                        text[i] = ''
+                    if item == '[CLS]' or item == '[SEP]':
+                        text[i] = '\n'
+                    if item == '[PAD]':
+                        text[i] = ''
+                print("=" * 40 + " SAMPLE " + str(generated) + " " + "=" * 40)
+                text = ''.join(text).replace('##', '').strip()
+                print(text)
+        print("=" * 80)
 
 
 if __name__ == '__main__':
