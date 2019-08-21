@@ -91,7 +91,7 @@ class GPT2Generator:
         generated = 0
         for _ in range(num_samples // self.batch_size):
             out = self.generate_sequence(
-                context_ids=context_ids, keyword_ids=keyword_ids, length=length, num_samples=num_samples,
+                context_ids=context_ids, keyword_ids=keyword_ids, length=length, num_samples=1,
                 temperature=temperature, top_k=top_k, top_p=top_p
             )
             out = out.tolist()
@@ -119,7 +119,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--device', default='0,1,2,3', type=str, required=False, help='生成设备')
     parser.add_argument('--length', default=512, type=int, required=False, help='生成长度')
-    parser.add_argument('--batch_size', default=4, type=int, required=False, help='生成的batch size')
+    parser.add_argument('--batch_size', default=1, type=int, required=False, help='生成的batch size')
     parser.add_argument('--num_samples', default=1, type=int, required=False, help='生成几个样本')
     parser.add_argument('--temperature', default=1, type=float, required=False, help='生成温度')
     parser.add_argument('--topk', default=8, type=int, required=False, help='最高几选一')
@@ -140,7 +140,7 @@ if __name__ == '__main__':
                        temperature=1,
                        top_k=8,
                        top_p=0,
-                       num_samples=1)
+                       num_samples=4)
 
 
 
