@@ -132,6 +132,7 @@ if __name__ == '__main__':
     parser.add_argument('--keywords', default='中国男篮，王治郅，姚明', type=str, required=False, help='关键词，以中文逗号隔开')
 
     args = parser.parse_args()
+
     generator = GPT2Generator(args)
     generator.generate(raw_text="姚明在对阵美国对中爆砍50分10板大号两双",
                        keywords="男篮世界杯，王治郅，易建联",
