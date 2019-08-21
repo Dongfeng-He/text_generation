@@ -134,7 +134,7 @@ if __name__ == '__main__':
     args = parser.parse_args()
     generator = GPT2Generator(args)
     generator.generate(raw_text="姚明在对阵美国对中爆砍50分10板大号两双",
-                       keywords="王治郅，易建联，男篮世界杯",
+                       keywords="男篮世界杯，王治郅，易建联",
                        length=512,
                        temperature=1,
                        top_k=8,
