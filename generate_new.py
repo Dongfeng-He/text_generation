@@ -101,17 +101,17 @@ class GPT2Generator:
             for i in range(self.batch_size):
                 generated += 1
                 text = self.tokenizer.convert_ids_to_tokens(out[0])
-                for i, item in enumerate(text[:-1]):  # 确保英文前后有空格
-                    if self.is_word(item) and self.is_word(text[i + 1]):
-                        text[i] = item + ' '
+                for j, item in enumerate(text[:-1]):  # 确保英文前后有空格
+                    if self.is_word(item) and self.is_word(text[j + 1]):
+                        text[j] = item + ' '
 
-                for i, item in enumerate(text):
+                for j, item in enumerate(text):
                     if item == '[MASK]':
-                        text[i] = ''
+                        text[j] = ''
                     if item == '[CLS]' or item == '[SEP]':
-                        text[i] = '\n'
+                        text[j] = '\n'
                     if item == '[PAD]':
-                        text[i] = ''
+                        text[j] = ''
                 print("=" * 40 + " SAMPLE " + str(generated) + " " + "=" * 40)
                 text = ''.join(text).replace('##', '').strip()
                 print(text)
@@ -135,6 +135,8 @@ if __name__ == '__main__':
     parser.add_argument('--keywords', default='中国男篮，王治郅，姚明', type=str, required=False, help='关键词，以中文逗号隔开')
 
     args = parser.parse_args()
+    if torch.cuda.is_available() is False:
+        args.model_path = "old_model/model_epoch1"
     generator = GPT2Generator(args)
 
     raw_text_list = []
@@ -150,7 +152,7 @@ if __name__ == '__main__':
     for raw_text, keywords in zip(raw_text_list, keywords_list):
         generator.generate(raw_text=raw_text,
                            keywords=keywords,
-                           length=512,
+                           length=1024,
                            temperature=1,
                            top_k=8,
                            top_p=0,
