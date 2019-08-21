@@ -108,6 +108,8 @@ class GPT2Generator:
                             text[i] = ''
                         if item == '[CLS]' or item == '[SEP]':
                             text[i] = '\n'
+                        if item == '[PAD]':
+                            text[i] = ''
                     print("=" * 40 + " SAMPLE " + str(generated) + " " + "=" * 40)
                     text = ''.join(text).replace('##', '').strip()
                     print(text)
