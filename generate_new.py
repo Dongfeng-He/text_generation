@@ -140,7 +140,7 @@ if __name__ == '__main__':
                        temperature=1,
                        top_k=8,
                        top_p=0,
-                       num_samples=12)
+                       num_samples=4)
 
 
 
