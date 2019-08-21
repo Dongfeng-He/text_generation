@@ -142,6 +142,7 @@ if __name__ == '__main__':
     with open("test.txt", "r") as f:
         for line in f:
             line = line.strip()
+            if len(line) == 0: continue
             line = json.loads(line)
             raw_text_list.append(line[0])
             keywords_list.append(line[1])
