@@ -104,7 +104,6 @@ class GPT2Generator:
                 for j, item in enumerate(text[:-1]):  # 确保英文前后有空格
                     if self.is_word(item) and self.is_word(text[j + 1]):
                         text[j] = item + ' '
-
                 for j, item in enumerate(text):
                     if item == '[MASK]':
                         text[j] = ''
@@ -136,7 +135,7 @@ if __name__ == '__main__':
 
     args = parser.parse_args()
     if torch.cuda.is_available() is False:
-        args.model_path = "old_model/model_epoch1"
+        args.model_path = "model"
     generator = GPT2Generator(args)
 
     raw_text_list = []
@@ -153,10 +152,10 @@ if __name__ == '__main__':
         generator.generate(raw_text=raw_text,
                            keywords=keywords,
                            length=512,
-                           temperature=0.7,
+                           temperature=1,
                            top_k=8,
                            top_p=0,
-                           num_samples=4)
+                           num_samples=1)
 
 
 
