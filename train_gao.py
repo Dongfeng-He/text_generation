@@ -221,12 +221,13 @@ class GPT2Trainer:
                         running_loss * self.gradient_accumulation / self.log_step))
                     running_loss = 0
 
-            if not os.path.exists(self.output_dir + 'model_epoch{}'.format(epoch + 1)):
-                os.makedirs(self.output_dir + 'model_epoch{}'.format(epoch + 1))
-            model_to_save = model.module if hasattr(model, 'module') else model
-            model_to_save.save_pretrained(self.output_dir + 'model_epoch{}'.format(epoch + 1))
-            # torch.save(scheduler.state_dict(), output_dir + 'model_epoch{}/scheduler.pt'.format(epoch + 1))
-            # torch.save(optimizer.state_dict(), output_dir + 'model_epoch{}/optimizer.pt'.format(epoch + 1))
+            if (epoch + 1) % 5 == 0:
+                if not os.path.exists(self.output_dir + 'model_epoch{}'.format(epoch + 1)):
+                    os.makedirs(self.output_dir + 'model_epoch{}'.format(epoch + 1))
+                model_to_save = model.module if hasattr(model, 'module') else model
+                model_to_save.save_pretrained(self.output_dir + 'model_epoch{}'.format(epoch + 1))
+                # torch.save(scheduler.state_dict(), output_dir + 'model_epoch{}/scheduler.pt'.format(epoch + 1))
+                # torch.save(optimizer.state_dict(), output_dir + 'model_epoch{}/optimizer.pt'.format(epoch + 1))
 
             then = datetime.now()
             self.print_and_log('time: {}'.format(then))
