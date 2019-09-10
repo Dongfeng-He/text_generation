@@ -88,7 +88,7 @@ class GPT2KWModel(GPT2PreTrainedModel):
         self.transformer = GPT2Model(config)
         self.lm_head = nn.Linear(config.n_embd, config.vocab_size, bias=False)
         self.attention_layer = Attention(hidden_size=config.n_embd, head_num=config.n_head, scale=True)
-        self.apply(self.init_weights)
+        self.init_weights()
         self.tie_weights()
 
     def tie_weights(self):
