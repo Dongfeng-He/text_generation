@@ -198,13 +198,12 @@ class GPT2Trainer:
             multi_gpu = False
 
         overall_step = 0
-
+        running_loss = 0
         for epoch in range(self.epochs):
             self.print_and_log('epoch {}'.format(epoch + 1))
             now = datetime.now()
             self.print_and_log('time: {}'.format(now))
             optimizer.zero_grad()
-            running_loss = 0
             for i, batch_data in enumerate(train_loader):
                 if torch.cuda.is_available():
                     passage_ids = batch_data[0].to(self.device, non_blocking=True)
