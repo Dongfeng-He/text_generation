@@ -76,7 +76,7 @@ class GPT2Trainer:
                                 content = content.replace('\n', ' [SEP] ')
                                 content_list.append(content)
                                 cnt += 1
-                                if cnt == 10 and self.debug_mode:
+                                if cnt == 5000 and self.debug_mode:
                                     return content_list
         return content_list
 
@@ -97,7 +97,7 @@ class GPT2Trainer:
                             content = content.replace('\n', ' [SEP] ')
                             content_list.append(content)
                             cnt += 1
-                            if cnt == 10 and self.debug_mode:
+                            if cnt == 5000 and self.debug_mode:
                                 return content_list
 
         return content_list
@@ -297,7 +297,7 @@ if __name__ == '__main__':
     parser.add_argument('--no_wordpiece', action='store_true', help='不做word piece切词')
     parser.add_argument('--segment', action='store_true', help='中文以词为单位')
     args = parser.parse_args()
-    trainer = GPT2Trainer(args, debug_mode=False)
+    trainer = GPT2Trainer(args, debug_mode=True)
     auto_shutdown = False
     if auto_shutdown:
         try:
