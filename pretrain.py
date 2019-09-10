@@ -21,7 +21,7 @@ class GPT2Trainer:
             from tokenizations import tokenization_bert
         os.environ["CUDA_VISIBLE_DEVICES"] = args.device  # 此处设置程序使用哪些显卡
         self.model_config = pytorch_transformers.modeling_gpt2.GPT2Config.from_json_file(args.model_config)
-        self.n_ctx = self.model_config.n_ctx
+        self.n_ctx = 512
         self.full_tokenizer = tokenization_bert.BertTokenizer(vocab_file=args.tokenizer_path)
         self.full_tokenizer.max_len = self.n_ctx
         self.device = 'cuda' if torch.cuda.is_available() else 'cpu'
@@ -280,12 +280,12 @@ if __name__ == '__main__':
                         help='tokenized语料存放位置')
     parser.add_argument('--raw', action='store_true', help='是否先做tokenize')
     parser.add_argument('--epochs', default=4, type=int, required=False, help='训练循环')
-    parser.add_argument('--batch_size', default=2, type=int, required=False, help='训练batch size')
+    parser.add_argument('--batch_size', default=8, type=int, required=False, help='训练batch size')
     parser.add_argument('--accumulation_steps', default=1, type=int, required=False, help='梯度累加')
     parser.add_argument('--lr', default=1.5e-4, type=float, required=False, help='学习率')
     parser.add_argument('--warmup_steps', default=2000, type=int, required=False, help='warm up步数')
     parser.add_argument('--log_step', default=1000, type=int, required=False, help='多少步汇报一次loss')
-    parser.add_argument('--stride', default=768, type=int, required=False, help='训练时取训练数据的窗口步长')
+    parser.add_argument('--stride', default=384, type=int, required=False, help='训练时取训练数据的窗口步长')
     parser.add_argument('--gradient_accumulation', default=1, type=str, required=False, help='梯度积累')
     parser.add_argument('--fp16', action='store_true', help='混合精度')
     parser.add_argument('--fp16_opt_level', default='O1', type=str, required=False)
