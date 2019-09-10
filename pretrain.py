@@ -51,8 +51,8 @@ class GPT2Trainer:
             self.baike_path = "/Volumes/移动硬盘/语料/3.百科问答/baike_qa_train.json"
             self.news_path = "/Volumes/移动硬盘/语料/2.新闻语料/news2016zh_train.json"
         else:
-            self.wiki_dir = "/Volumes/移动硬盘/语料/1.中文维基"
-            self.thu_news_dir = "/Users/hedongfeng/Desktop/下载/THUCNews"
+            self.wiki_dir = "/root/text_generation/data/wiki_zh"
+            self.thu_news_dir = "/root/text_generation/data/THUCNews"
         self.f_log = open("train_log.txt", "w")
 
     def get_wiki(self):
