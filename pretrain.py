@@ -23,7 +23,7 @@ class GPT2Trainer:
         self.model_config = pytorch_transformers.modeling_gpt2.GPT2Config.from_json_file(args.model_config)
         self.n_ctx = 512
         self.full_tokenizer = tokenization_bert.BertTokenizer(vocab_file=args.tokenizer_path)
-        self.full_tokenizer.max_len = self.n_ctx
+        # self.full_tokenizer.max_len = self.n_ctx
         self.device = 'cuda' if torch.cuda.is_available() else 'cpu'
         self.raw_data_path = args.raw_data_path
         self.tokenized_data_path = args.tokenized_data_path
@@ -129,13 +129,13 @@ class GPT2Trainer:
         wiki_content_list = self.get_wiki()
         thu_content_list = self.get_thu_news()
         content_list = wiki_content_list + thu_content_list
-        self.print_and_log("总文章数: %d" % len(content_list))
         all_ids = []
         for content in content_list:
             if len(content) < self.min_length: continue
             tokens = self.full_tokenizer.tokenize(content)
             ids = self.full_tokenizer.convert_tokens_to_ids(['[MASK]'] + tokens + ['[CLS]'])
             all_ids.extend(ids)
+        self.print_and_log("总文章数: %d" % len(content_list))
         self.print_and_log("总字数: %d" % len(all_ids))
         start_point = 0
         samples = []
@@ -279,12 +279,12 @@ if __name__ == '__main__':
     parser.add_argument('--tokenized_data_path', default='data/tokenized/', type=str, required=False,
                         help='tokenized语料存放位置')
     parser.add_argument('--raw', action='store_true', help='是否先做tokenize')
-    parser.add_argument('--epochs', default=4, type=int, required=False, help='训练循环')
+    parser.add_argument('--epochs', default=2, type=int, required=False, help='训练循环')
     parser.add_argument('--batch_size', default=8, type=int, required=False, help='训练batch size')
     parser.add_argument('--accumulation_steps', default=1, type=int, required=False, help='梯度累加')
     parser.add_argument('--lr', default=1.5e-4, type=float, required=False, help='学习率')
-    parser.add_argument('--warmup_steps', default=2000, type=int, required=False, help='warm up步数')
-    parser.add_argument('--log_step', default=1000, type=int, required=False, help='多少步汇报一次loss')
+    parser.add_argument('--warmup_steps', default=10000, type=int, required=False, help='warm up步数')
+    parser.add_argument('--log_step', default=10000, type=int, required=False, help='多少步汇报一次loss')
     parser.add_argument('--stride', default=384, type=int, required=False, help='训练时取训练数据的窗口步长')
     parser.add_argument('--gradient_accumulation', default=1, type=str, required=False, help='梯度积累')
     parser.add_argument('--fp16', action='store_true', help='混合精度')
@@ -297,8 +297,8 @@ if __name__ == '__main__':
     parser.add_argument('--no_wordpiece', action='store_true', help='不做word piece切词')
     parser.add_argument('--segment', action='store_true', help='中文以词为单位')
     args = parser.parse_args()
-    trainer = GPT2Trainer(args, debug_mode=True)
-    auto_shutdown = False
+    trainer = GPT2Trainer(args, debug_mode=False)
+    auto_shutdown = True
     if auto_shutdown:
         try:
             trainer.train()
