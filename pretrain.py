@@ -57,6 +57,7 @@ class GPT2Trainer:
 
     def get_wiki(self):
         content_list = []
+        cnt = 0
         for root, dirs, files in os.walk(self.wiki_dir):
             for dir in dirs:
                 for subroot, _, files in os.walk(os.path.join(root, dir)):
@@ -74,10 +75,14 @@ class GPT2Trainer:
                                     .replace("\n\n", "\n")
                                 content = content.replace('\n', ' [SEP] ')
                                 content_list.append(content)
+                                cnt += 1
+                                if cnt == 10:
+                                    return content_list
         return content_list
 
     def get_thu_news(self):
         content_list = []
+        cnt = 0
         for root, dirs, files in os.walk(self.thu_news_dir):
             for dir in dirs:
                 for subroot, _, files in os.walk(os.path.join(root, dir)):
@@ -91,6 +96,10 @@ class GPT2Trainer:
                                 .replace("\n\n\n\n", "\n").replace("\n\n\n", "\n").replace("\n\n", "\n")
                             content = content.replace('\n', ' [SEP] ')
                             content_list.append(content)
+                            cnt += 1
+                            if cnt == 10:
+                                return content_list
+
         return content_list
 
     def get_zhihu(self):
@@ -275,7 +284,7 @@ if __name__ == '__main__':
     parser.add_argument('--accumulation_steps', default=1, type=int, required=False, help='梯度累加')
     parser.add_argument('--lr', default=1.5e-4, type=float, required=False, help='学习率')
     parser.add_argument('--warmup_steps', default=2000, type=int, required=False, help='warm up步数')
-    parser.add_argument('--log_step', default=10000, type=int, required=False, help='多少步汇报一次loss')
+    parser.add_argument('--log_step', default=1000, type=int, required=False, help='多少步汇报一次loss')
     parser.add_argument('--stride', default=768, type=int, required=False, help='训练时取训练数据的窗口步长')
     parser.add_argument('--gradient_accumulation', default=1, type=str, required=False, help='梯度积累')
     parser.add_argument('--fp16', action='store_true', help='混合精度')
