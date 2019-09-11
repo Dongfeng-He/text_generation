@@ -296,7 +296,7 @@ if __name__ == '__main__':
     parser.add_argument('--accumulation_steps', default=1, type=int, required=False, help='梯度累加')
     parser.add_argument('--lr', default=1.5e-4, type=float, required=False, help='学习率')
     parser.add_argument('--warmup_steps', default=10000, type=int, required=False, help='warm up步数')
-    parser.add_argument('--log_step', default=10000, type=int, required=False, help='多少步汇报一次loss')
+    parser.add_argument('--log_step', default=1000, type=int, required=False, help='多少步汇报一次loss')
     parser.add_argument('--stride', default=384, type=int, required=False, help='训练时取训练数据的窗口步长')
     parser.add_argument('--gradient_accumulation', default=1, type=str, required=False, help='梯度积累')
     parser.add_argument('--fp16', action='store_true', help='混合精度')
