@@ -110,7 +110,7 @@ def main():
                         help='模型参数')
     parser.add_argument('--tokenizer_path', default='cache/vocab.txt', type=str, required=False, help='词表路径')
     parser.add_argument('--model_path', default='pretrained_model/final_model', type=str, required=False, help='模型路径')
-    parser.add_argument('--prefix', default='王莽篡汉', type=str, required=False, help='生成文章的开头')
+    parser.add_argument('--prefix', default='岳阳是一个旅游胜地', type=str, required=False, help='生成文章的开头')
 
     args = parser.parse_args()
     print(args)
