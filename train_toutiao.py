@@ -144,6 +144,7 @@ class GPT2Trainer:
         if not self.pretrained_model:
             model = GPT2KWModel(config=self.model_config)
         else:
+            self.print_and_log('加载预训练模型')
             model = GPT2KWModel.from_pretrained(self.pretrained_model)
         model.train()
         model.to(self.device)
@@ -284,7 +285,7 @@ if __name__ == '__main__':
     parser.add_argument('--raw_data_path', default='data/train_toutiao.json', type=str, required=False, help='原始训练语料')
     parser.add_argument('--tokenized_data_path', default='data/tokenized/', type=str, required=False, help='tokenized语料存放位置')
     parser.add_argument('--raw', action='store_true', help='是否先做tokenize')
-    parser.add_argument('--epochs', default=10, type=int, required=False, help='训练循环')
+    parser.add_argument('--epochs', default=8, type=int, required=False, help='训练循环')
     parser.add_argument('--batch_size', default=8, type=int, required=False, help='训练batch size')
     parser.add_argument('--accumulation_steps', default=1, type=int, required=False, help='梯度累加')
     parser.add_argument('--lr', default=1.5e-4, type=float, required=False, help='学习率')
