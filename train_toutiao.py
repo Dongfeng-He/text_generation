@@ -234,14 +234,14 @@ class GPT2Trainer:
             model.eval()
             valid_loss = 0
             valid_step = 0
-            for i, batch_data in enumerate(valid_loader):
+            for i, valid_batch_data in enumerate(valid_loader):
                 if torch.cuda.is_available():
-                    keyword_ids = batch_data[0].to(self.device, non_blocking=True)
-                    passage_ids = batch_data[1].to(self.device, non_blocking=True)
+                    keyword_ids = valid_batch_data[0].to(self.device, non_blocking=True)
+                    passage_ids = valid_batch_data[1].to(self.device, non_blocking=True)
                     label_ids = passage_ids.clone().to(self.device, non_blocking=True)
                 else:
-                    keyword_ids = batch_data[0]
-                    passage_ids = batch_data[1]
+                    keyword_ids = valid_batch_data[0]
+                    passage_ids = valid_batch_data[1]
                     label_ids = passage_ids.clone()
                 outputs = model(input_ids=passage_ids, keyword_ids=keyword_ids, labels=label_ids)
                 loss, logits = outputs[:2]
