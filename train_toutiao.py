@@ -230,25 +230,26 @@ class GPT2Trainer:
                     running_loss = 0
 
             # 开始验证
-            valid_start_time = datetime.now()
-            model.eval()
-            valid_loss = 0
-            valid_step = 0
-            for i, valid_batch_data in enumerate(valid_loader):
-                if torch.cuda.is_available():
-                    keyword_ids = valid_batch_data[0].to(self.device, non_blocking=True)
-                    passage_ids = valid_batch_data[1].to(self.device, non_blocking=True)
-                    label_ids = passage_ids.clone().to(self.device, non_blocking=True)
-                else:
-                    keyword_ids = valid_batch_data[0]
-                    passage_ids = valid_batch_data[1]
-                    label_ids = passage_ids.clone()
-                outputs = model(input_ids=passage_ids, keyword_ids=keyword_ids, labels=label_ids)
-                loss, logits = outputs[:2]
-                valid_loss += loss
-                valid_step += 1
-            valid_loss = valid_loss / valid_step
-            self.print_and_log('valid duration: {}, valid loss: {}'.format(valid_loss, datetime.now() - valid_start_time))
+            with torch.no_grad():
+                valid_start_time = datetime.now()
+                model.eval()
+                valid_loss = 0
+                valid_step = 0
+                for i, valid_batch_data in enumerate(valid_loader):
+                    if torch.cuda.is_available():
+                        keyword_ids = valid_batch_data[0].to(self.device, non_blocking=True)
+                        passage_ids = valid_batch_data[1].to(self.device, non_blocking=True)
+                        label_ids = passage_ids.clone().to(self.device, non_blocking=True)
+                    else:
+                        keyword_ids = valid_batch_data[0]
+                        passage_ids = valid_batch_data[1]
+                        label_ids = passage_ids.clone()
+                    outputs = model(input_ids=passage_ids, keyword_ids=keyword_ids, labels=label_ids)
+                    loss, logits = outputs[:2]
+                    valid_loss += loss
+                    valid_step += 1
+                valid_loss = valid_loss / valid_step
+                self.print_and_log('valid duration: {}, valid loss: {}'.format(valid_loss, datetime.now() - valid_start_time))
 
             # 保存模型
             if (epoch + 1) % 1 == 0:
