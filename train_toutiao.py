@@ -249,7 +249,7 @@ class GPT2Trainer:
                     valid_loss += loss
                     valid_step += 1
                 valid_loss = valid_loss / valid_step
-                self.print_and_log('valid duration: {}, valid loss: {}'.format(valid_loss, datetime.now() - valid_start_time))
+                self.print_and_log('valid duration: {}, valid loss: {}'.format(datetime.now() - valid_start_time, valid_loss))
 
             # 保存模型
             if (epoch + 1) % 1 == 0:
