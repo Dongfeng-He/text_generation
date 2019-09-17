@@ -160,6 +160,7 @@ class GPT2Trainer:
 
         epoch_steps = int(train_loader.sampler.num_samples / self.batch_size / self.accumulation_steps)
         total_steps = epoch_steps * self.epochs
+        self.print_and_log('总样本数 = {}'.format(train_loader.sampler.num_samples))
         self.print_and_log('epoch 步数 = {}'.format(epoch_steps))
         self.print_and_log('总步数 = {}'.format(total_steps))
 
@@ -310,8 +311,8 @@ if __name__ == '__main__':
         args.fp16 = True
         args.raw_data_path = "data/train_toutiao.json"
         args.pretrained_model = "/root/text_generation/pretrained_model/final_model"
-    trainer = GPT2Trainer(args, debug_mode=True)
-    auto_shutdown = False
+    trainer = GPT2Trainer(args, debug_mode=False)
+    auto_shutdown = True
     if auto_shutdown:
         try:
             trainer.train()
