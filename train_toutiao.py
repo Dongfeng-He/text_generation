@@ -277,12 +277,10 @@ class GPT2Trainer:
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--device', default='0,1,2,3', type=str, required=False, help='设置使用哪些显卡')
-    parser.add_argument('--model_config', default='config/model_config.json', type=str, required=False,
-                        help='选择模型参数')
+    parser.add_argument('--model_config', default='config/model_config.json', type=str, required=False, help='选择模型参数')
     parser.add_argument('--tokenizer_path', default='cache/vocab.txt', type=str, required=False, help='选择词库')
     parser.add_argument('--raw_data_path', default='data/train_toutiao.json', type=str, required=False, help='原始训练语料')
-    parser.add_argument('--tokenized_data_path', default='data/tokenized/', type=str, required=False,
-                        help='tokenized语料存放位置')
+    parser.add_argument('--tokenized_data_path', default='data/tokenized/', type=str, required=False, help='tokenized语料存放位置')
     parser.add_argument('--raw', action='store_true', help='是否先做tokenize')
     parser.add_argument('--epochs', default=10, type=int, required=False, help='训练循环')
     parser.add_argument('--batch_size', default=8, type=int, required=False, help='训练batch size')
@@ -308,7 +306,7 @@ if __name__ == '__main__':
         args.raw_data_path = "/Volumes/移动硬盘/数据/头条历史/train_toutiao.json"
         args.pretrained_model = "/Volumes/移动硬盘/model/GPT2_pretrained"
     else:
-        args.fp16 = True
+        args.fp16 = False
         args.raw_data_path = "data/train_toutiao.json"
         args.pretrained_model = "/root/text_generation/pretrained_model/final_model"
     trainer = GPT2Trainer(args, debug_mode=True)
