@@ -182,13 +182,13 @@ class GPT2Trainer:
             multi_gpu = False
 
         overall_step = 0
+        running_loss = 0
         model.train()
         for epoch in range(self.epochs):
             self.print_and_log('epoch {}'.format(epoch + 1))
             now = datetime.now()
             self.print_and_log('time: {}'.format(now))
             optimizer.zero_grad()
-            running_loss = 0
             for i, batch_data in enumerate(train_loader):
                 if torch.cuda.is_available():
                     keyword_ids = batch_data[0].to(self.device, non_blocking=True)
@@ -309,8 +309,9 @@ if __name__ == '__main__':
         args.raw_data_path = "/Volumes/移动硬盘/数据/头条历史/train_toutiao.json"
         args.pretrained_model = "/Volumes/移动硬盘/model/GPT2_pretrained"
     else:
-        args.fp16 = True
+        args.fp16 = False
         args.raw_data_path = "data/train_toutiao.json"
+        # args.pretrained_model = "/root/text_generation/pretrained_model/final_model"
         args.pretrained_model = "/root/text_generation/pretrained_model/final_model"
     trainer = GPT2Trainer(args, debug_mode=False)
     auto_shutdown = True
