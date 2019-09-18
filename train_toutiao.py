@@ -312,7 +312,7 @@ if __name__ == '__main__':
         args.fp16 = False
         args.raw_data_path = "data/train_toutiao.json"
         # args.pretrained_model = "/root/text_generation/pretrained_model/final_model"
-        args.pretrained_model = "/root/text_generation/pretrained_model/final_model"
+        args.pretrained_model = ""
     trainer = GPT2Trainer(args, debug_mode=False)
     auto_shutdown = True
     if auto_shutdown:
