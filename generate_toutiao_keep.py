@@ -146,7 +146,7 @@ if __name__ == '__main__':
 
     args = parser.parse_args()
     if torch.cuda.is_available() is False:
-        args.model_path = "/Volumes/移动硬盘/model/toutiao_model/final_model"
+        args.model_path = "/Volumes/移动硬盘/model/toutiao_model/model_epoch7"
     generator = GPT2Generator(args)
 
     raw_text_list = []
