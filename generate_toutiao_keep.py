@@ -91,8 +91,8 @@ class GPT2Generator:
                 keyword_ids.extend(single_keyword_ids)
         keyword_ids.extend(self.tokenizer.convert_tokens_to_ids(["[PAD]"] * (self.keywords_max_length - len(keyword_ids))))
         # 处理正文
-        passage = ' [MASK] ' + content + ' [SEP] ' # [MASK] 表示文章开头
-        # passage = content + ' [SEP] '   # [MASK] 表示文章开头
+        # passage = ' [MASK] ' + content + ' [SEP] ' # [MASK] 表示文章开头
+        passage = content + ' [SEP] '   # [MASK] 表示文章开头
         # passage = content   # [MASK] 表示文章开头
         passage_tokens = self.tokenizer.tokenize(passage)
         passage_ids = self.tokenizer.convert_tokens_to_ids(passage_tokens)
@@ -164,7 +164,7 @@ if __name__ == '__main__':
                            keywords=keywords,
                            length=1024,
                            window_size=512,
-                           temperature=1,
+                           temperature=0.5,
                            top_k=8,
                            top_p=0,
                            num_samples=2)
