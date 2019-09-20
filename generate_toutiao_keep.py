@@ -167,7 +167,7 @@ if __name__ == '__main__':
                            temperature=1,
                            top_k=8,
                            top_p=0,
-                           num_samples=1)
+                           num_samples=5)
 
 
 
