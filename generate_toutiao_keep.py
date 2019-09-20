@@ -163,7 +163,7 @@ if __name__ == '__main__':
         generator.generate(raw_text=raw_text,
                            keywords=keywords,
                            length=1024,
-                           window_size=256,
+                           window_size=128,
                            temperature=1,
                            top_k=8,
                            top_p=0,
