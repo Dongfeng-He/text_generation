@@ -244,16 +244,16 @@ class GPT2Trainer:
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--device', default='0,1,2,3', type=str, required=False, help='设置使用哪些显卡')
-    parser.add_argument('--model_config', default='config/model_config.json', type=str, required=False, help='选择模型参数')
-    parser.add_argument('--tokenizer_path', default='cache/vocab.txt', type=str, required=False, help='选择词库')
+    parser.add_argument('--model_config', default='config/model_config_history.json', type=str, required=False, help='选择模型参数')
+    parser.add_argument('--tokenizer_path', default='cache/vocab_history.txt', type=str, required=False, help='选择词库')
     parser.add_argument('--raw_data_path', default='data/train_toutiao_all.json', type=str, required=False, help='原始训练语料')
     parser.add_argument('--tokenized_data_path', default='data/tokenized/', type=str, required=False, help='tokenized语料存放位置')
     parser.add_argument('--raw', action='store_true', help='是否先做tokenize')
-    parser.add_argument('--epochs', default=8, type=int, required=False, help='训练循环')
-    parser.add_argument('--batch_size', default=8, type=int, required=False, help='训练batch size')
+    parser.add_argument('--epochs', default=6, type=int, required=False, help='训练循环')
+    parser.add_argument('--batch_size', default=12, type=int, required=False, help='训练batch size')
     parser.add_argument('--accumulation_steps', default=1, type=int, required=False, help='梯度累加')
     parser.add_argument('--lr', default=1.5e-4, type=float, required=False, help='学习率')
-    parser.add_argument('--warmup_steps', default=2000, type=int, required=False, help='warm up步数')
+    parser.add_argument('--warmup_steps', default=10000, type=int, required=False, help='warm up步数')
     parser.add_argument('--log_step', default=10000, type=int, required=False, help='多少步汇报一次loss')
     parser.add_argument('--stride', default=256, type=int, required=False, help='训练时取训练数据的窗口步长')
     parser.add_argument('--gradient_accumulation', default=1, type=str, required=False, help='梯度积累')
@@ -275,10 +275,10 @@ if __name__ == '__main__':
     else:
         args.fp16 = False
         args.raw_data_path = "train_toutiao_all.json"
-        args.pretrained_model = "/root/text_generation/pretrained_model/final_model"
-        # args.pretrained_model = ""
+        # args.pretrained_model = "/root/text_generation/pretrained_model/final_model"
+        args.pretrained_model = ""
     trainer = GPT2Trainer(args, debug_mode=False)
-    auto_shutdown = False
+    auto_shutdown = True
     if auto_shutdown:
         try:
             trainer.train()
