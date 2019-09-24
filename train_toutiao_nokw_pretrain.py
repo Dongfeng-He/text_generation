@@ -153,7 +153,7 @@ class GPT2Trainer:
 
         optimizer = pytorch_transformers.AdamW(model.parameters(), lr=self.lr, correct_bias=True)
         # scheduler = pytorch_transformers.WarmupLinearSchedule(optimizer, warmup_steps=self.warmup_steps, t_total=total_steps)
-        scheduler = pytorch_transformers.WarmupCosineSchedule(optimizer, warmup_steps=self.warmup_steps, t_total=total_steps)
+        scheduler = pytorch_transformers.WarmupConstantSchedule(optimizer, warmup_steps=self.warmup_steps)
 
         if self.fp16:
             try:
