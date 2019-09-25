@@ -311,7 +311,7 @@ if __name__ == '__main__':
         args.raw_data_path = "/Volumes/移动硬盘/数据/头条历史/train_toutiao.json"
         args.pretrained_model = "/Volumes/移动硬盘/model/GPT2_pretrained"
     else:
-        args.fp16 = True
+        args.fp16 = False
         args.raw_data_path = "train_toutiao_all.json"
         args.pretrained_model = "/root/text_generation/model_toutiao/final_model"
         # args.pretrained_model = ""
