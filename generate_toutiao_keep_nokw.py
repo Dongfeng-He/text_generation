@@ -1,4 +1,5 @@
 import torch
+import pytorch_transformers
 import torch.nn.functional as F
 from model import GPT2KWModel
 import os
@@ -13,7 +14,7 @@ class GPT2Generator:
         self.device = "cuda" if torch.cuda.is_available() else "cpu"
         self.batch_size = args.batch_size
         self.tokenizer = tokenization_bert.BertTokenizer(vocab_file=args.tokenizer_path)
-        self.model = GPT2KWModel.from_pretrained(args.model_path)
+        self.model = pytorch_transformers.modeling_gpt2.GPT2LMHeadModel.from_pretrained(args.model_path)
         self.model.to(self.device)
         self.model.eval()
         self.keywords_max_length = 64
@@ -70,7 +71,7 @@ class GPT2Generator:
         generated = context_ids
         with torch.no_grad():
             for _ in range(length):
-                inputs = {'input_ids': generated[:, -(window_size-1):], "keyword_ids": keyword_ids}
+                inputs = {'input_ids': generated[:, -(window_size-1):]}
                 outputs = self.model(**inputs)
                 next_token_logits = outputs[0][0, -1, :] / temperature
                 filtered_logits = self.top_k_top_p_filtering(next_token_logits, top_k=top_k, top_p=top_p)
@@ -92,8 +93,8 @@ class GPT2Generator:
         keyword_ids.extend(self.tokenizer.convert_tokens_to_ids(["[PAD]"] * (self.keywords_max_length - len(keyword_ids))))
         # 处理正文
         # passage = ' [MASK] ' + content + ' [SEP] ' # [MASK] 表示文章开头
-        passage = content + ' [SEP] '   # [MASK] 表示文章开头
-        # passage = content   # [MASK] 表示文章开头
+        # passage = content + ' [SEP] '   # [MASK] 表示文章开头
+        passage = content   # [MASK] 表示文章开头
         passage_tokens = self.tokenizer.tokenize(passage)
         passage_ids = self.tokenizer.convert_tokens_to_ids(passage_tokens)
         return passage_ids, keyword_ids
@@ -140,13 +141,13 @@ if __name__ == '__main__':
     parser.add_argument('--model_config', default='config/model_config.json', type=str, required=False,
                         help='模型参数')
     parser.add_argument('--tokenizer_path', default='cache/vocab.txt', type=str, required=False, help='词表路径')
-    parser.add_argument('--model_path', default='model_toutiao/model_epoch5', type=str, required=False, help='模型路径')
+    parser.add_argument('--model_path', default='model_toutiao_all_pretrain/model_epoch2', type=str, required=False, help='模型路径')
     parser.add_argument('--raw_text', default='', type=str, required=False, help='生成文章的开头')
     parser.add_argument('--keywords', default='中国男篮，王治郅，姚明', type=str, required=False, help='关键词，以中文逗号隔开')
 
     args = parser.parse_args()
     if torch.cuda.is_available() is False:
-        args.model_path = "/Volumes/移动硬盘/model/toutiao_model/final_model"
+        args.model_path = "/Volumes/移动硬盘/model/model_toutiao_all_pretrain/model_epoch2"
     generator = GPT2Generator(args)
 
     raw_text_list = []
@@ -162,10 +163,10 @@ if __name__ == '__main__':
     for raw_text, keywords in zip(raw_text_list, keywords_list):
         generator.generate(raw_text=raw_text,
                            keywords=keywords,
-                           length=1024,
-                           window_size=512,
-                           temperature=1,
-                           top_k=8,
+                           length=256,
+                           window_size=256,
+                           temperature=0.7,
+                           top_k=20,
                            top_p=0,
                            num_samples=1)
 
