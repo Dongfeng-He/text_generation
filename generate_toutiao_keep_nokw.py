@@ -141,7 +141,7 @@ if __name__ == '__main__':
     parser.add_argument('--model_config', default='config/model_config.json', type=str, required=False,
                         help='模型参数')
     parser.add_argument('--tokenizer_path', default='cache/vocab.txt', type=str, required=False, help='词表路径')
-    parser.add_argument('--model_path', default='model_toutiao_all_pretrain/model_epoch2', type=str, required=False, help='模型路径')
+    parser.add_argument('--model_path', default='model_toutiao_all_pretrain/model_epoch3', type=str, required=False, help='模型路径')
     parser.add_argument('--raw_text', default='', type=str, required=False, help='生成文章的开头')
     parser.add_argument('--keywords', default='中国男篮，王治郅，姚明', type=str, required=False, help='关键词，以中文逗号隔开')
 
@@ -163,10 +163,10 @@ if __name__ == '__main__':
     for raw_text, keywords in zip(raw_text_list, keywords_list):
         generator.generate(raw_text=raw_text,
                            keywords=keywords,
-                           length=256,
-                           window_size=256,
+                           length=512,
+                           window_size=512,
                            temperature=0.7,
-                           top_k=20,
+                           top_k=40,
                            top_p=0,
                            num_samples=1)
 
