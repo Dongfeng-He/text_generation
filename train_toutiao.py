@@ -287,7 +287,7 @@ if __name__ == '__main__':
     parser.add_argument('--raw_data_path', default='data/train_toutiao.json', type=str, required=False, help='原始训练语料')
     parser.add_argument('--tokenized_data_path', default='data/tokenized/', type=str, required=False, help='tokenized语料存放位置')
     parser.add_argument('--raw', action='store_true', help='是否先做tokenize')
-    parser.add_argument('--epochs', default=8, type=int, required=False, help='训练循环')
+    parser.add_argument('--epochs', default=16, type=int, required=False, help='训练循环')
     parser.add_argument('--batch_size', default=16, type=int, required=False, help='训练batch size')
     parser.add_argument('--accumulation_steps', default=1, type=int, required=False, help='梯度累加')
     parser.add_argument('--lr', default=6e-5, type=float, required=False, help='学习率')
