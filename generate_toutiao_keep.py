@@ -164,8 +164,8 @@ if __name__ == '__main__':
                            keywords=keywords,
                            length=1024,
                            window_size=512,
-                           temperature=1,
-                           top_k=8,
+                           temperature=0.5,
+                           top_k=40,
                            top_p=0,
                            num_samples=1)
 
