@@ -75,13 +75,15 @@ class GPT2Trainer:
             sample_keywords_list = []
             while start_point < len(passage_tokens) - self.passage_max_length:
                 sample_passage = passage_tokens[start_point: start_point + self.passage_max_length]
-                sample_keywords = list(filter(lambda x: " ".join(x) in " ".join(sample_passage), keyword_tokens_list))
+                # sample_keywords = list(filter(lambda x: " ".join(x) in " ".join(sample_passage), keyword_tokens_list))
+                sample_keywords = keyword_tokens_list
                 sample_passage_list.append(sample_passage)
                 sample_keywords_list.append(sample_keywords)
                 start_point += self.stride
             else:
                 sample_passage = passage_tokens[-self.passage_max_length:]
-                sample_keywords = list(filter(lambda x: " ".join(x) in " ".join(sample_passage), keyword_tokens_list))
+                # sample_keywords = list(filter(lambda x: " ".join(x) in " ".join(sample_passage), keyword_tokens_list))
+                sample_keywords = keyword_tokens_list
                 sample_passage_list.append(sample_passage)
                 sample_keywords_list.append(sample_keywords)
             # 把 token 变 id
@@ -286,7 +288,7 @@ if __name__ == '__main__':
     parser.add_argument('--tokenized_data_path', default='data/tokenized/', type=str, required=False, help='tokenized语料存放位置')
     parser.add_argument('--raw', action='store_true', help='是否先做tokenize')
     parser.add_argument('--epochs', default=8, type=int, required=False, help='训练循环')
-    parser.add_argument('--batch_size', default=8, type=int, required=False, help='训练batch size')
+    parser.add_argument('--batch_size', default=24, type=int, required=False, help='训练batch size')
     parser.add_argument('--accumulation_steps', default=1, type=int, required=False, help='梯度累加')
     parser.add_argument('--lr', default=6e-5, type=float, required=False, help='学习率')
     parser.add_argument('--warmup_steps', default=10000, type=int, required=False, help='warm up步数')
