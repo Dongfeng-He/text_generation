@@ -49,7 +49,7 @@ class GPT2Trainer:
         # self.tb_writer = SummaryWriter(log_dir=args.writer_dir)
         self.debug_mode = debug_mode
         self.keywords_max_length = 64
-        self.passage_max_length = 512
+        self.passage_max_length = 256
         self.passage_min_length = 128
         self.f_log = open("train_log.txt", "w")
 
@@ -166,8 +166,8 @@ class GPT2Trainer:
         self.print_and_log('总步数 = {}'.format(total_steps))
 
         optimizer = pytorch_transformers.AdamW(model.parameters(), lr=self.lr, correct_bias=True)
-        scheduler = pytorch_transformers.WarmupLinearSchedule(optimizer, warmup_steps=self.warmup_steps, t_total=total_steps)
-
+        # scheduler = pytorch_transformers.WarmupLinearSchedule(optimizer, warmup_steps=self.warmup_steps, t_total=total_steps)
+        scheduler = pytorch_transformers.WarmupCosineSchedule(optimizer, warmup_steps=self.warmup_steps, t_total=total_steps)
         if self.fp16:
             try:
                 from apex import amp
@@ -288,17 +288,17 @@ if __name__ == '__main__':
     parser.add_argument('--epochs', default=8, type=int, required=False, help='训练循环')
     parser.add_argument('--batch_size', default=8, type=int, required=False, help='训练batch size')
     parser.add_argument('--accumulation_steps', default=1, type=int, required=False, help='梯度累加')
-    parser.add_argument('--lr', default=1.5e-4, type=float, required=False, help='学习率')
+    parser.add_argument('--lr', default=6e-5, type=float, required=False, help='学习率')
     parser.add_argument('--warmup_steps', default=10000, type=int, required=False, help='warm up步数')
     parser.add_argument('--log_step', default=10000, type=int, required=False, help='多少步汇报一次loss')
-    parser.add_argument('--stride', default=256, type=int, required=False, help='训练时取训练数据的窗口步长')
+    parser.add_argument('--stride', default=192, type=int, required=False, help='训练时取训练数据的窗口步长')
     parser.add_argument('--gradient_accumulation', default=1, type=str, required=False, help='梯度积累')
     parser.add_argument('--fp16', action='store_true', help='混合精度')
     parser.add_argument('--fp16_opt_level', default='O1', type=str, required=False)
     parser.add_argument('--max_grad_norm', default=1.0, type=float, required=False)
     parser.add_argument('--num_pieces', default=100, type=int, required=False, help='将训练语料分成多少份')
     parser.add_argument('--min_length', default=128, type=int, required=False, help='最短收录文章长度')
-    parser.add_argument('--output_dir', default='model_toutiao/', type=str, required=False, help='模型输出路径')
+    parser.add_argument('--output_dir', default='model_toutiao_256/', type=str, required=False, help='模型输出路径')
     parser.add_argument('--pretrained_model', default='', type=str, required=False, help='模型训练起点路径')
     parser.add_argument('--writer_dir', default='tensorboard_summary/', type=str, required=False, help='Tensorboard路径')
     parser.add_argument('--no_wordpiece', action='store_true', help='不做word piece切词')
@@ -310,11 +310,11 @@ if __name__ == '__main__':
         args.pretrained_model = "/Volumes/移动硬盘/model/GPT2_pretrained"
     else:
         args.fp16 = False
-        args.raw_data_path = "data/train_toutiao.json"
-        # args.pretrained_model = "/root/text_generation/pretrained_model/final_model"
-        args.pretrained_model = ""
-    trainer = GPT2Trainer(args, debug_mode=False)
-    auto_shutdown = True
+        args.raw_data_path = "train_toutiao_all.json"
+        args.pretrained_model = "/root/text_generation/model_toutiao/final_model"
+        # args.pretrained_model = ""
+    trainer = GPT2Trainer(args, debug_mode=True)
+    auto_shutdown = False
     if auto_shutdown:
         try:
             trainer.train()
