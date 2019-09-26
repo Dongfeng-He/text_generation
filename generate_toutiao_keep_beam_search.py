@@ -170,7 +170,7 @@ if __name__ == '__main__':
     for raw_text, keywords in zip(raw_text_list, keywords_list):
         generator.generate(raw_text=raw_text,
                            keywords=keywords,
-                           length=1024,
+                           length=512,
                            window_size=512,
                            temperature=1,
                            top_k=8,
