@@ -87,11 +87,7 @@ class GPT2Generator:
                         break
                 candidates.append([generated, sum_prob / cnt])
         candidates = sorted(candidates, key=lambda x: x[1], reverse=True)
-        generated = candidates[0][0]
-        print("max_prob", candidates[0][1])
-        for candidate in candidates:
-            print(candidate[1])
-        return generated
+        return candidates
 
     def tokenization(self, content, keywords):
         keywords = keywords.split("，")
@@ -117,28 +113,32 @@ class GPT2Generator:
         context_ids, keyword_ids = self.tokenization(raw_text, keywords)
         generated = 0
         for _ in range(num_samples // self.batch_size):
-            out = self.generate_sequence(
+            output = self.generate_sequence(
                 context_ids=context_ids, keyword_ids=keyword_ids, length=length, num_samples=1,
                 temperature=temperature, top_k=top_k, top_p=top_p, window_size=window_size
             )
-            out = out.tolist()
-            for i in range(self.batch_size):
-                generated += 1
-                text = self.tokenizer.convert_ids_to_tokens(out[0])
-                for j, item in enumerate(text[:-1]):  # 确保英文前后有空格
-                    if self.is_word(item) and self.is_word(text[j + 1]):
-                        text[j] = item + ' '
-                for j, item in enumerate(text):
-                    if item == '[MASK]':
-                        text[j] = ''
-                    if item == '[CLS]' or item == '[SEP]':
-                        text[j] = '\n'
-                    if item == '[PAD]':
-                        text[j] = ''
-                print("=" * 40 + " SAMPLE " + str(generated) + " " + "=" * 40)
-                text = ''.join(text).replace('##', '').strip()
-                print(text)
-        print("=" * 80)
+            for candidate in output:
+                out = candidate[0]
+                prob = candidate[1]
+                print("prob: ", prob)
+                out = out.tolist()
+                for i in range(self.batch_size):
+                    generated += 1
+                    text = self.tokenizer.convert_ids_to_tokens(out[0])
+                    for j, item in enumerate(text[:-1]):  # 确保英文前后有空格
+                        if self.is_word(item) and self.is_word(text[j + 1]):
+                            text[j] = item + ' '
+                    for j, item in enumerate(text):
+                        if item == '[MASK]':
+                            text[j] = ''
+                        if item == '[CLS]' or item == '[SEP]':
+                            text[j] = '\n'
+                        if item == '[PAD]':
+                            text[j] = ''
+                    print("=" * 40 + " SAMPLE " + str(generated) + " " + "=" * 40)
+                    text = ''.join(text).replace('##', '').strip()
+                    print(text)
+            print("=" * 80)
 
 
 if __name__ == '__main__':
