@@ -86,7 +86,7 @@ class GPT2Generator:
                     if next_token == 101:   # CLS 是结束符
                         break
                 candidates.append([generated, sum_prob / cnt])
-        candidates = sorted(candidates, lambda x: x[1], reverse=True)
+        candidates = sorted(candidates, key=lambda x: x[1], reverse=True)
         generated = candidates[0][0]
         print("max_prob", candidates[0][1])
         return generated
