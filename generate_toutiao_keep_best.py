@@ -89,6 +89,8 @@ class GPT2Generator:
         candidates = sorted(candidates, key=lambda x: x[1], reverse=True)
         generated = candidates[0][0]
         print("max_prob", candidates[0][1])
+        for candidate in candidates:
+            print(candidate[1])
         return generated
 
     def tokenization(self, content, keywords):
