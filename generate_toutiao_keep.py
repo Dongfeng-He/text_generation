@@ -140,7 +140,8 @@ if __name__ == '__main__':
     parser.add_argument('--model_config', default='config/model_config.json', type=str, required=False,
                         help='模型参数')
     parser.add_argument('--tokenizer_path', default='cache/vocab.txt', type=str, required=False, help='词表路径')
-    parser.add_argument('--model_path', default='model_toutiao/model_epoch5', type=str, required=False, help='模型路径')
+    # parser.add_argument('--model_path', default='model_toutiao/model_epoch5', type=str, required=False, help='模型路径')
+    parser.add_argument('--model_path', default='model_toutiao/final_model', type=str, required=False, help='模型路径')
     parser.add_argument('--raw_text', default='', type=str, required=False, help='生成文章的开头')
     parser.add_argument('--keywords', default='中国男篮，王治郅，姚明', type=str, required=False, help='关键词，以中文逗号隔开')
 
